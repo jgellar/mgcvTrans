@@ -51,9 +51,17 @@
 #' TO BE COMPLETED.
 #' 
 #' 
+#' @return An object of class "dt.smooth". This will contain all the elements
+#'   associated with the \code{\link[mgcv]{smooth.construct}} object from the
+#'   inner smooth (defined by \code{xt$bs}), in addition to:
+#'   \enumerate{
+#'     \item tf: the named list of transformation functions applied to the
+#'     input data
+#'     \item class: the class of the smooth object for the inner smooth
+#'   }
 #' @author Jonathan Gellar
-#' @return An object of class "dt.smooth". See
-#'    \code{\link[mgcv]{smooth.construct}} for the elements it will contain.
+#' @seealso \code{\link[mgcv]{smooth.construct}}
+#' 
 #' 
 
 smooth.construct.dt.smooth.spec <- function(object, data, knots) {
@@ -71,12 +79,15 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
   } else {
     object$xt$tf
   }
-  nt <- length(object$term)
   
   # Make tf a list of functions (if it isn't already)
+  if (is.null(tf)) {
+    tf <- identity
+    warning("No transformation function supplied... using identity")
+  }
   if (!is.list(tf)) tf <- list(tf)
   tf <- lapply(tf, function(f) {
-    if (is.character(f) & nt==2) {
+    if (is.character(f) & length(object$term)==2) {
       if (f=="s-t") {
         function(s,t) s-t
       } else if (f=="s/t") {
@@ -100,7 +111,7 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
     argnms <- names(args)
     if (length(args) > length(object$term))
       stop("Transformation function of too many arguments is supplied")
-    if (!(all(argnms) %in% object$term))
+    if (!(all(argnms %in% object$term)))
       # If argnms aren't term names, defaults to first length(args) terms
       argnms <- object$term[1:length(args)]
     if (!all(argnms %in% names(data))) {
@@ -120,6 +131,7 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
     
   # Modify smooth.spec object
   if (class(object) %in% c("tensor.smooth.spec", "t2.smooth.spec")) {
+    # tensor-product smooth: modify margins
     object$margin <- lapply(object$margin, function(mar) {
       xt <- mar$xt
       bs <- ifelse(is.null(xt$bs), "tp", xt$bs)
@@ -154,7 +166,7 @@ Predict.matrix.dt.smooth <- function(object, data) {
   tdata <- lapply(tf, function(f) {
     args <- formals(f)
     argnms <- names(args)
-    if (!(all(argnms) %in% object$term))
+    if (!(all(argnms %in% object$term)))
       # If argnms aren't term names, defaults to first length(args) terms
       argnms <- object$term[1:length(args)]
     if (!all(argnms %in% names(data))) {
@@ -172,6 +184,8 @@ Predict.matrix.dt.smooth <- function(object, data) {
   untr <- names(data)[!(names(data) %in% names(tdata))]
   tdata[untr] <- data[untr]
   
-  # Evaluate and return prediction matrix at transformed locations
+  # Modify smooth object and call Predict.matrix
+  object$tf <- NULL
+  class(object) <- object$class
   Predict.matrix(object, tdata)
 }
