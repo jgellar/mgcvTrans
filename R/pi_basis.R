@@ -100,7 +100,7 @@ smooth.construct.pi.smooth.spec <- function(object, data, knots) {
       # xt is the g list itself
       g <- xt
     } else {
-      if (!all(names(xt) %in% c("g", "bs", "xt", "idx")))
+      if (!all(names(xt) %in% c("g", "bs", "xt", "idx", "msp")))
         warning("Ignoring unrecognized elements of \"xt\"")
       g  <- xt$g
       bs <- xt$bs
@@ -128,7 +128,7 @@ smooth.construct.pi.smooth.spec <- function(object, data, knots) {
   
   # Extract tvar based on idx
   tvar <- data[[object$term[idx]]]
-  dat  <- data[object$term[-idx]]
+  dat  <- data[c(object$term[-idx])]
   
   # Set up design for t
   n_transform <- length(g)
@@ -140,34 +140,35 @@ smooth.construct.pi.smooth.spec <- function(object, data, knots) {
   args <- list(k=object$bs.dim, fx=object$fixed, m=object$p.order,
                xt=newxt, id=object$id, sp=object$sp)
   if (!is.null(bs)) args$bs <- bs
-  if (object$by!="NA") {
-    args$by <- data[[object$by]]
-    dat[[object$by]] <- data[[object$by]]
-  }
   callargs <- sapply(object$term[-idx], as.name)
   names(callargs) <- NULL
   smoothspec <- do.call(mgcv::s, append(callargs, args))
-  sm0 <- mgcv::smooth.construct(smoothspec, data = dat, knots = knots)
+  if (object$by != "NA") {
+    smoothspec$by <- object$by
+    dat[object$by] <- data[object$by]
+  }
   
-  # Modify smooth term:
-  sm <- sm0
+  # sm will be the return object; sm0 is the reduced-dimension smooth
+  sm = sm0 <- mgcv::smooth.construct(smoothspec, data = dat, knots = knots)
+  
+  # Modify sm:
   sm$term <- c(object$term[-idx], object$term[idx])
   sm$bs.dim <-  sm$bs.dim * n_transform
   sm$null.space.dim <-  sm$null.space.dim * n_transform
-  sm$df <- sm$df * n_transform
   sm$dim <- length(object$term)
-  sm$label <- paste0("f(", object$term[idx], ")*", sm$label)
+  sm$label <- paste0("g(", object$term[idx], ")*", sm$label)
   sm$xt <- object$xt
   sm$X <- mgcv::tensor.prod.model.matrix(list(g_X, sm$X))
   sm$S <- if (msp) {
-    # A different smoothing parameter for each 
+    # A different penalty (and smoothing paramter) for each g
     lapply(1:n_transform, function(k) {
       diag(as.numeric((1:n_transform) == k)) %x% sm$S[[1]]
     })
   } else {
-    # One smoothing parameter for all f_k's
+    # One penalty (and smoothing parameter) for all f_k's
     list(diag(n_transform) %x% sm$S[[1]])
   }
+  if (!is.null(sm$df)) sm$df <- sm$df * n_transform
   sm$bs <- strsplit(class(smoothspec), ".", fixed=T)[[1]][1]
   sm$g <- g
   sm$sm <- sm0

@@ -182,7 +182,7 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
     xt <- object$xt
     bs <- ifelse(is.null(xt$bs), "tp", xt$bs)
     class(object) <- paste0(bs, ".smooth.spec")
-    object$xt <- xt[!(names(xt) %in% c("tf", "bs"))]
+    object$xt <- xt$xt
   }
   
   # Create smooth and modify return object
