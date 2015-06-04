@@ -52,15 +52,17 @@ smooth.construct.sre.smooth.spec <- function(object, data, knots) {
   object.s$by <- "NA"
   class(object.s) <- ifelse(is.null(object.s$xt), "tp.smooth.spec",
                             paste0(object.s$xt, ".smooth.spec"))
-  smooth.s <- smooth.construct(object.s, data=data[!names(data)%in%object$term],
-                               knots=knots)
+  smooth.s <- mgcv::smooth.construct(object.s,
+                                     data=data[!names(data)%in%object$term],
+                                     knots=knots)
   
   # re smooth
   object.re <- object
   object.re$by <- "NA"
   class(object.re) <- "re.smooth.spec"
-  smooth.re <- smooth.construct(object.re, data=data[names(data)!=object$by],
-                                knots=knots)
+  smooth.re <- mgcv::smooth.construct(object.re,
+                                      data=data[names(data)!=object$by],
+                                      knots=knots)
   
   # Modify return object appropriately
   nre <- smooth.re$bs.dim

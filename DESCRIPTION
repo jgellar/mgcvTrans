@@ -1,9 +1,15 @@
 Package: mgcvTrans
 Type: Package
-Title: What the package does (short line)
-Version: 1.0
+Title: Defines a number of mgcv bases involving transformations of terms
+Version: 0.1.0
 Date: 2015-04-17
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Jonathan Gellar
+Maintainer: Jonathan Gellar <JGellar@mathematica-mpr.com>
+Description: This package consists of a set of a number of mgcv-style basis
+    constructors and predict methods. These bases involve transformations of
+    variables, in order to reparameterize the basis before using other more
+    standard mgcv bases. For example, the "dt" basis is for domain
+    transformations, and the "pi" basis parameterizes the interaction between
+    terms of a multivariate basis.
+License: GPL-2
+Imports: mgcv

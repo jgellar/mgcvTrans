@@ -12,7 +12,7 @@ smooth.construct.ms.smooth.spec <- function(object, data, knots) {
     dat.i <- data[obj.i$term]
     if (obj.i$by != "NA")
       dat.i[obj.i$by] <- data[obj.i$by]
-    smooth.construct(obj.i, data=dat.i, knots=knots)
+    mgcv::smooth.construct(obj.i, data=dat.i, knots=knots)
   })
   
   # Create new smooth object
