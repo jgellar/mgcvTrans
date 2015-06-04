@@ -147,7 +147,7 @@ smooth.construct.pi.smooth.spec <- function(object, data, knots) {
   callargs <- sapply(object$term[-idx], as.name)
   names(callargs) <- NULL
   smoothspec <- do.call(mgcv::s, append(callargs, args))
-  sm0 <- smooth.construct(smoothspec, data = dat, knots = knots)
+  sm0 <- mgcv::smooth.construct(smoothspec, data = dat, knots = knots)
   
   # Modify smooth term:
   sm <- sm0
@@ -215,7 +215,7 @@ Predict.matrix.pi.smooth <- function(object, data) {
     do.call(f, list(t=tvar)), numeric(length(tvar)))
   
   # Evaluate object$sm at new locations
-  pmat <- Predict.matrix(object = object$sm, data = dat)
+  pmat <- mgcv::Predict.matrix(object = object$sm, data = dat)
   
   # Return tensor product with g_X
   mgcv::tensor.prod.model.matrix(list(g_X, pmat))

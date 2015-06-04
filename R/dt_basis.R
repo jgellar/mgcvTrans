@@ -142,9 +142,6 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
     trmnms <- if (all(argnms %in% object$term))
       argnms
     else object$term[1:length(args)]
-    #     if (!(all(argnms %in% object$term)))
-    #       # If argnms aren't term names, defaults to first length(args) terms
-    #       argnms <- object$term[1:length(args)]
     if (!all(trmnms %in% names(data))) {
       miss <- trmnms[!(trmnms %in% names(data))]
       stop(paste0("Variable(s) ", paste(trmnms[miss], collapse=", "),
@@ -189,7 +186,7 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
   }
   
   # Create smooth and modify return object
-  sm <- smooth.construct(object, data = tdata, knots = knots)
+  sm <- mgcv::smooth.construct(object, data = tdata, knots = knots)
   sm$tf <- tf
   sm$class <- class(sm)
   class(sm) <- "dt.smooth"
@@ -267,5 +264,5 @@ Predict.matrix.dt.smooth <- function(object, data) {
   # Modify smooth object and call Predict.matrix
   object$tf <- NULL
   class(object) <- object$class
-  Predict.matrix(object, tdata)
+  mgcv::Predict.matrix(object, tdata)
 }
