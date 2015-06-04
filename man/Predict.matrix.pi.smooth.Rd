@@ -4,7 +4,7 @@
 \alias{Predict.matrix.pi.smooth}
 \title{Predict.matrix method for pi basis}
 \usage{
-\method{Predict.matrix}{pi.smooth}(object, data)
+Predict.matrix.pi.smooth(object, data)
 }
 \description{
 Predict.matrix method for pi basis
