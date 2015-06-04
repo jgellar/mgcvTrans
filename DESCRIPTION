@@ -3,7 +3,7 @@ Type: Package
 Title: Defines a number of mgcv bases involving transformations of terms
 Version: 0.1.0
 Date: 2015-04-17
-Author: Authors@R: c(person("Jonathan", "Gellar",
+Authors@R: c(person("Jonathan", "Gellar",
                      email = "JGellar@mathematica-mpr.comm",
                       role = c("aut", "cre")),
                      person("Fabian", "Scheipl", role="ctb"))
