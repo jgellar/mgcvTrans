@@ -47,8 +47,15 @@ lines(xtrue,fhat3,col="green")
 legend("topright", c("Truth", "f(x)", "f(log(x))", "f(x) adaptive"),
        col=c("black", "red", "blue", "green"), lty="solid", lwd=c(3,1,1,1))
 
+N <- 500
+x1 <- rnorm(N)
+x2 <- rnorm(N, sd=2)
+y <- sin(x1) + cos(x2) + rnorm(N, sd=.5)
 
-
+sp1 <- s(x1)
+sp2 <- s(x2)
+mod.ms1 <- gam(y ~ s(x1, x2, bs="ms", xt="ps"))
+mod.ms2 <- gam(y ~ s(x1) + s(x2))
 
 
 y <- sin(2*pi*x/6) + rnorm(N, sd=.5)

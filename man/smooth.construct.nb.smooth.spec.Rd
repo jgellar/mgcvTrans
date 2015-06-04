@@ -4,7 +4,7 @@
 \alias{smooth.construct.nb.smooth.spec}
 \title{Smooths with No Basis}
 \usage{
-\method{smooth.construct}{nb.smooth.spec}(object, data, knots)
+smooth.construct.nb.smooth.spec(object, data, knots)
 }
 \description{
 The \code{nb} "basis" uses a separate coefficient for each value of
