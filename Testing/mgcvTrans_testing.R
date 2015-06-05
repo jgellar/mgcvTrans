@@ -101,3 +101,55 @@ ggplot(est.vd1, aes(SOFA.tmat, SOFA.Tmat)) +
   scale_y_continuous(expand = c(0,0)) +
   scale_x_continuous(expand = c(0,0))
 
+
+
+
+
+
+
+
+
+############
+# pi basis #
+############
+
+library(mgcv)
+load_all("../refund/")
+
+N <- 500
+x1 <- runif(N)
+x2 <- runif(N)
+f <- sin(2*pi*x1) - x2*2*sin(2*pi*x1)
+y <- f + rnorm(N, sd=.5)
+
+mod1.1 <- gam(y ~ s(x1, x2))
+est1.1 <- coef.pfr(mod1.1)
+names(est1.1)[3:4] <- c("SOFA.vd", "SOFA.arg")
+plotMe(est1.1)
+
+mod1.2 <- gam(y ~ te(x1, x2, bs="ps"))
+est1.2 <- coef.pfr(mod1.2)
+names(est1.2)[3:4] <- c("SOFA.vd", "SOFA.arg")
+plotMe(est1.2)
+
+mod1.3 <- gam(y ~ s(x1, x2, bs="pi", xt=list(g="linear")))
+est1.3 <- coef.pfr(mod1.3)
+names(est1.3)[3:4] <- c("SOFA.vd", "SOFA.arg")
+plotMe(est1.3)
+
+
+
+mod1.4 <- gam(y ~ s(x1, x2, bs="pi", xt=list(g="linear", msp=TRUE)))
+est1.4 <- coef.pfr(mod1.4)
+names(est1.4)[3:4] <- c("SOFA.vd", "SOFA.arg")
+plotMe(est1.4)
+
+
+
+
+ftrue <- sin(2*pi*est1.1$SOFA.arg) - est1.1$SOFA.vd*2*sin(2*pi*est1.1$SOFA.arg)
+amse <- sapply(list(est1.1, est1.2, est1.3, est1.4), function(x) mean((x$value - ftrue)^2))
+
+
+
+

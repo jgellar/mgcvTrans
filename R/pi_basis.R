@@ -159,14 +159,13 @@ smooth.construct.pi.smooth.spec <- function(object, data, knots) {
   sm$label <- paste0("g(", object$term[idx], ")*", sm$label)
   sm$xt <- object$xt
   sm$X <- mgcv::tensor.prod.model.matrix(list(g_X, sm$X))
-  sm$S <- if (msp) {
-    # A different penalty (and smoothing paramter) for each g
-    lapply(1:n_transform, function(k) {
+  if (msp) {
+    sm$S <- lapply(1:n_transform, function(k) {
       diag(as.numeric((1:n_transform) == k)) %x% sm$S[[1]]
     })
+    sm$rank <- sapply(sm$S, function(x) qr(x)$rank)
   } else {
-    # One penalty (and smoothing parameter) for all f_k's
-    list(diag(n_transform) %x% sm$S[[1]])
+    sm$S <- list(diag(n_transform) %x% sm$S[[1]])
   }
   if (!is.null(sm$df)) sm$df <- sm$df * n_transform
   sm$bs <- strsplit(class(smoothspec), ".", fixed=T)[[1]][1]
