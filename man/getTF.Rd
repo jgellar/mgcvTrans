@@ -4,7 +4,7 @@
 \alias{getTF}
 \title{Get recognized transformation function}
 \usage{
-getTF(x, n)
+getTF(fname, nterm)
 }
 \description{
 Get recognized transformation function

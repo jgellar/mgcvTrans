@@ -38,20 +38,31 @@ The \code{dt} basis allows for any of the standard \code{mgcv} (or
 \code{object} should be creaated with an \code{xt} argument. For
 non-tensor-product smooths, this will be a list with the following elements:
 \enumerate{
-  \item \code{tf}: a function or character string (or list of functions
+  \item \code{tf} (required): a function or character string (or list of functions
   and/or character strings) defining the coordinate transormations; see
   further details below.
   \item \code{bs} (optional): character string indicating the \code{bs} for
   the basis applied to the transformed coordinates; if empty, the appropriate
   defaults are used.
+  \item \code{basistype} (optional): character string indicating type of
+  bivariate basis used. Options include \code{"s"} (the default), \code{"te"},
+  \code{"ti"}, and \code{"t2"}, which correspond to \code{\link[mgcv]{s}},
+  \code{\link[mgcv]{te}}, \code{\link[mgcv]{ti}}, and \code{\link[mgcv]{t2}}.
+  \item \code{...} (optional): for tensor product smooths, additional arguments
+  to the function specified by \code{basistype} that are not available in
+  \code{s()} can be included here, e.g. \code{d}, \code{np}, etc.
 }
-For tensor product smooths, the \code{xt} argument could entered in the above
-form, in which case the same basis will be applied to each margin. If a
-different basis is desired for each margin, this could be done by setting
-\code{xt} to a list of such lists. In this case, \code{tf} need only be
-included in one of those lists.
 
-Let \code{nterms = length(object$terms)}. The \code{tf} element can take one
+For tensor product smooths, we recommend using \code{s()} to set up the basis,
+and specifying the tensor product using \code{xt$basistype} as described
+above. If the basis is set up using \code{te()}, then the variables in
+\code{object$term} will be split up, meaning all transformation functions
+would have to be univariate.
+}
+\section{Transformation Functions}{
+
+
+Let \code{nterms = length(object$term)}. The \code{tf} element can take one
 of the following forms:
 \enumerate{
   \item a function of \code{nargs} arguments, where \code{nargs <= nterms}.
@@ -70,37 +81,37 @@ of the following forms:
 }
 The following character strings are recognized as built-in transformations:
 \itemize{
-  \item \code{"log"}: log transformation (one variable)
-  \item \code{"ecdf"}: empirical cumulative distribution function (one variable)
-  \item \code{"linear01"}: linearly rescale from 0 to 1 (one variable)
-  \item \code{"s-t"}: first term ("s") minus the second term ("t") (two variables)
-  \item \code{"s/t"}: first term ("s") divided by the second term ("t") (two variables)
+  \item \code{"log"}: log transformation (univariate)
+  \item \code{"ecdf"}: empirical cumulative distribution function (univariate)
+  \item \code{"linear01"}: linearly rescale from 0 to 1 (univariate)
+  \item \code{"s-t"}: first term ("s") minus the second term ("t") (bivariate)
+  \item \code{"s/t"}: first term ("s") divided by the second term ("t") (bivariate)
 }
 
-IMPORTANT WHEN WRITING YOUR OWN FUNCTIONS:
 
-Some transformations rely on a function of the data used to fit the model,
-e.g. the max or min of this data. When making predictions based on these
-transformaitons, the transformation function will usually need access to the
-original data used to fit the model, not the data used for the prediction. In
-order to access this data, you can refer to the argument name appended with
-a zero ("0") within the function. For exapmle, suppose you want to scale
+
+Some transformations rely on a fixed "pivot point" based on the data used to
+fit the model, e.g. quantiles (such as the min or max) of this data.
+When making predictions based on these transformaitons, the transformation
+function will need to know what the pivot points are, based on the original
+(not prediction) data. In order to accomplish this, we allow the user to
+specify that they want their transformation function to refer to the original
+data (as opposed to whatever the "current" data is). This is done by appending
+a zero ("0") to the argument name.
+
+For example, suppose you want to scale
 the term linearly so that the data used to define the basis ranges from
 0 to 1. The wrong way to define this transformation function:
-\code{
-   function(x) {(x - max(x))/(max(x) - min(x))}
-}
+\code{function(x) {(x - max(x))/(max(x) - min(x))}}.
 This function will result in incorrect predictions if the range of data for
 which preditions are being made is not the same as the range of data that was
 used to define the basis. The proper way to define this function:
-\code{
-   function(x) {(x - max(x0))/(max(x0) - min(x0))}
-}
+\code{function(x) {(x - max(x0))/(max(x0) - min(x0))}}.
 By refering to \code{x0} instead of \code{x}, you are indicating that you
 want to use the original data instead of the current data. This may seem
 strange to refer to a variable that is not one of the arguments, but the
-\code{"dt"} explicity defines this variable in the basis constructor and
-places it in the environment of the transformation function.
+\code{"dt"} constructor explicity places these variables in the environment
+of the transformation function to make them available.
 }
 \author{
 Jonathan Gellar

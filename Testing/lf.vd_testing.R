@@ -26,16 +26,29 @@ plotMe <- function(est, lims=NULL) {
 data(sofa)
 
 # Untransformed
+#TPRS
 fit.vd1.1 <- pfr(death ~ lf.vd(SOFA) + age + los, family="binomial", data=sofa)
 est.vd1.1 <- coef(fit.vd1.1, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
 plotMe(est.vd1.1, lims = c(-2,6))
 
+# TPBS
+fit.vd1.2 <- pfr(death ~ lf.vd(SOFA, basistype="te", bs="ps") + age + los, family="binomial", data=sofa)
+est.vd1.2 <- coef(fit.vd1.2, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
+plotMe(est.vd1.2, lims = c(-2,6))
+
 
 # Lagged
+# TPRS
 fit.vd2.1 <- pfr(death ~ lf.vd(SOFA, transform = "lagged") + age + los,
                  family="binomial", data=sofa)
 est.vd2.1 <- coef(fit.vd2.1, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
 plotMe(est.vd2.1, c(-2,6))
+
+#TPBS
+fit.vd2.2 <- pfr(death ~ lf.vd(SOFA, transform = "lagged", basistype="te", bs="ps") + age + los,
+                 family="binomial", data=sofa)
+est.vd2.2 <- coef(fit.vd2.2, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
+plotMe(est.vd2.2, c(-2,6))
 
 
 # Domain-Standardized
@@ -43,28 +56,36 @@ plotMe(est.vd2.1, c(-2,6))
 fit.vd3.1 <- pfr(death ~ lf.vd(SOFA, transform = "standardized") + age + los,
                  family="binomial", data=sofa)
 est.vd3.1 <- coef(fit.vd3.1, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
-plotMe(est.vd3.1)
+plotMe(est.vd3.1, c(-2,4))
 
 # TPBS: DOESN'T WORK
 fit.vd3.2 <- pfr(death ~ lf.vd(SOFA, transform = "standardized", bs="ps", basistype = "te")
                  + age + los, family="binomial", data=sofa)
 est.vd3.2 <- coef(fit.vd3.2, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
-plotMe(est.vd3.2)
+plotMe(est.vd3.2, c(-2,4))
 
 
 
 # No Interaction
-fit.vd4.1 <- pfr(death ~ lf.vd(SOFA, transform = "noInteraction") + age + los,
+fit.vd4.1 <- pfr(death ~ lf.vd(SOFA, transform = "noInteraction", bs="ps") + age + los,
                  family="binomial", data=sofa)
 est.vd4.1 <- coef(fit.vd4.1, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
 plotMe(est.vd4.1)
 
 
 # Linear Interaction
+# One penalty
 fit.vd5.1 <- pfr(death ~ lf.vd(SOFA, transform = "linear", bs="ps") + age + los,
                  family="binomial", data=sofa)
 est.vd5.1 <- coef(fit.vd5.1, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
 plotMe(est.vd5.1, c(-2,6))
+
+# Multiple penalties
+fit.vd5.2 <- pfr(death ~ lf.vd(SOFA, transform = "linear", bs="ps", msp=TRUE)
+                 + age + los, family="binomial", data=sofa)
+est.vd5.2 <- coef(fit.vd5.2, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
+plotMe(est.vd5.2, c(-2,6))
+
 
 
 # Quadratic Interaction

@@ -18,20 +18,30 @@
 #' \code{object} should be creaated with an \code{xt} argument. For
 #' non-tensor-product smooths, this will be a list with the following elements:
 #' \enumerate{
-#'   \item \code{tf}: a function or character string (or list of functions
+#'   \item \code{tf} (required): a function or character string (or list of functions
 #'   and/or character strings) defining the coordinate transormations; see
 #'   further details below.
 #'   \item \code{bs} (optional): character string indicating the \code{bs} for
 #'   the basis applied to the transformed coordinates; if empty, the appropriate
 #'   defaults are used.
+#'   \item \code{basistype} (optional): character string indicating type of
+#'   bivariate basis used. Options include \code{"s"} (the default), \code{"te"},
+#'   \code{"ti"}, and \code{"t2"}, which correspond to \code{\link[mgcv]{s}},
+#'   \code{\link[mgcv]{te}}, \code{\link[mgcv]{ti}}, and \code{\link[mgcv]{t2}}.
+#'   \item \code{...} (optional): for tensor product smooths, additional arguments
+#'   to the function specified by \code{basistype} that are not available in
+#'   \code{s()} can be included here, e.g. \code{d}, \code{np}, etc.
 #' }
-#' For tensor product smooths, the \code{xt} argument could entered in the above
-#' form, in which case the same basis will be applied to each margin. If a
-#' different basis is desired for each margin, this could be done by setting
-#' \code{xt} to a list of such lists. In this case, \code{tf} need only be
-#' included in one of those lists.
 #' 
-#' Let \code{nterms = length(object$terms)}. The \code{tf} element can take one
+#' For tensor product smooths, we recommend using \code{s()} to set up the basis,
+#' and specifying the tensor product using \code{xt$basistype} as described
+#' above. If the basis is set up using \code{te()}, then the variables in
+#' \code{object$term} will be split up, meaning all transformation functions
+#' would have to be univariate.
+#' 
+#' @section Transformation Functions:
+#' 
+#' Let \code{nterms = length(object$term)}. The \code{tf} element can take one
 #' of the following forms:
 #' \enumerate{
 #'   \item a function of \code{nargs} arguments, where \code{nargs <= nterms}.
@@ -57,30 +67,31 @@
 #'   \item \code{"s/t"}: first term ("s") divided by the second term ("t") (bivariate)
 #' }
 #' 
-#' IMPORTANT WHEN WRITING YOUR OWN FUNCTIONS:
 #' 
-#' Some transformations rely on a function of the data used to fit the model,
-#' e.g. the max or min of this data. When making predictions based on these
-#' transformaitons, the transformation function will usually need access to the
-#' original data used to fit the model, not the data used for the prediction. In
-#' order to access this data, you can refer to the argument name appended with
-#' a zero ("0") within the function. For exapmle, suppose you want to scale
+# @section Pivot points:
+#' 
+#' Some transformations rely on a fixed "pivot point" based on the data used to
+#' fit the model, e.g. quantiles (such as the min or max) of this data.
+#' When making predictions based on these transformaitons, the transformation
+#' function will need to know what the pivot points are, based on the original
+#' (not prediction) data. In order to accomplish this, we allow the user to
+#' specify that they want their transformation function to refer to the original
+#' data (as opposed to whatever the "current" data is). This is done by appending
+#' a zero ("0") to the argument name.
+#' 
+#' For example, suppose you want to scale
 #' the term linearly so that the data used to define the basis ranges from
 #' 0 to 1. The wrong way to define this transformation function:
-#' \code{
-#'    function(x) {(x - max(x))/(max(x) - min(x))}
-#' }
+#' \code{function(x) {(x - max(x))/(max(x) - min(x))}}.
 #' This function will result in incorrect predictions if the range of data for
 #' which preditions are being made is not the same as the range of data that was
 #' used to define the basis. The proper way to define this function:
-#' \code{
-#'    function(x) {(x - max(x0))/(max(x0) - min(x0))}
-#' }
+#' \code{function(x) {(x - max(x0))/(max(x0) - min(x0))}}.
 #' By refering to \code{x0} instead of \code{x}, you are indicating that you
 #' want to use the original data instead of the current data. This may seem
 #' strange to refer to a variable that is not one of the arguments, but the
-#' \code{"dt"} explicity defines this variable in the basis constructor and
-#' places it in the environment of the transformation function.
+#' \code{"dt"} constructor explicity places these variables in the environment
+#' of the transformation function to make them available.
 #' 
 #' @return An object of class "dt.smooth". This will contain all the elements
 #'   associated with the \code{\link[mgcv]{smooth.construct}} object from the
@@ -99,19 +110,10 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
   # Constructor method for parametric bivariate basis
   
   # Input Checks (TO DO)
+  xt <- object$xt
   
-  
-  # Extract transformation functions
-  tf <- if (class(object) %in% c("tensor.smooth.spec", "t2.smooth.spec")) {
-    x <- sapply(chk$margin, function(mar) {
-      mar$xt$tf
-    })
-    x[!sapply(x, is.null)][[1]]
-  } else {
-    object$xt$tf
-  }
-  
-  # Make tf a list of functions (if it isn't already)
+  # Extract tf and make it a list of functions (if it isn't already)
+  tf <- xt$tf
   if (is.null(tf)) {
     tf <- identity
     warning("No transformation function supplied... using identity")
@@ -167,22 +169,27 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
   untr <- names(data)[!(names(data) %in% names(tdata))]
   tdata[untr] <- data[untr]
     
-  # Modify smooth.spec object
-  if (class(object) %in% c("tensor.smooth.spec", "t2.smooth.spec")) {
-    # tensor-product smooth: modify margins
-    object$margin <- lapply(object$margin, function(mar) {
-      xt <- mar$xt
-      bs <- ifelse(is.null(xt$bs), "tp", xt$bs)
-      class(mar) <- paste0(bs, ".smooth.spec")
-      mar$xt <- xt[!(names(xt) %in% c("tf", "bs"))]
-      mar
-    })
-  } else {
-    # "s" smooth
-    xt <- object$xt
+  # New smooth.spec object
+  object <- if (any(is.null(xt$basistype), xt$basistype=="s")) {
+    # s smooth: Modify existing object
     bs <- ifelse(is.null(xt$bs), "tp", xt$bs)
     class(object) <- paste0(bs, ".smooth.spec")
     object$xt <- xt$xt
+    object
+  } else {
+    # tensor product smooth: need to create new smooth.spec object
+    args <- xt[!(names(xt) %in% c("tf", "basistype"))]
+    if (is.null(args$k) & object$bs.dim>0) args$k <- object$bs.dim
+    if (is.null(args$m) & !is.na(object$p.order)) args$m <- object$p.order
+    if (is.null(args$id) & !is.null(object$id)) args$id <- object$id
+    if (is.null(args$sp) & !is.null(object$sp)) args$sp <- object$sp
+    if ((xt$basistype %in% c("te", "ti")) & is.null(args$fx))
+      args$fx <- object$fixed
+    if (!(object$by == "NA"))
+      args$by <- as.symbol(object$by)
+    eval(as.call(c(list(quote(eval(parse(text=paste0("mgcv::", xt$basistype))))),
+                   lapply(object$term, as.symbol),
+                   args)))    
   }
   
   # Create smooth and modify return object
