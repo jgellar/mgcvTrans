@@ -5,7 +5,7 @@ library(dplyr)
 
 dev_mode()
 load_all("../refund")
-load_all("../mgcvTrans/")
+#load_all("../mgcvTrans/")
 
 plotMe <- function(est, lims=NULL) {
   if (is.null(lims)) lims <- range(est$value)
@@ -58,7 +58,7 @@ fit.vd3.1 <- pfr(death ~ lf.vd(SOFA, transform = "standardized") + age + los,
 est.vd3.1 <- coef(fit.vd3.1, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
 plotMe(est.vd3.1, c(-2,4))
 
-# TPBS: DOESN'T WORK
+# TPBS:
 fit.vd3.2 <- pfr(death ~ lf.vd(SOFA, transform = "standardized", bs="ps", basistype = "te")
                  + age + los, family="binomial", data=sofa)
 est.vd3.2 <- coef(fit.vd3.2, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
@@ -75,13 +75,13 @@ plotMe(est.vd4.1)
 
 # Linear Interaction
 # One penalty
-fit.vd5.1 <- pfr(death ~ lf.vd(SOFA, transform = "linear", bs="ps") + age + los,
+fit.vd5.1 <- pfr(death ~ lf.vd(SOFA, transform = "linear", bs="ps", cpen=TRUE) + age + los,
                  family="binomial", data=sofa)
 est.vd5.1 <- coef(fit.vd5.1, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
 plotMe(est.vd5.1, c(-2,6))
 
 # Multiple penalties
-fit.vd5.2 <- pfr(death ~ lf.vd(SOFA, transform = "linear", bs="ps", msp=TRUE)
+fit.vd5.2 <- pfr(death ~ lf.vd(SOFA, transform = "linear", bs="ps")
                  + age + los, family="binomial", data=sofa)
 est.vd5.2 <- coef(fit.vd5.2, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
 plotMe(est.vd5.2, c(-2,6))
@@ -89,8 +89,12 @@ plotMe(est.vd5.2, c(-2,6))
 
 
 # Quadratic Interaction
-fit.vd6.1 <- pfr(death ~ lf.vd(SOFA, transform = "quadratic", bs="ps") + age + los,
+fit.vd6.1 <- pfr(death ~ lf.vd(SOFA, transform = "quadratic", bs="ps", cpen=TRUE) + age + los,
                  family="binomial", data=sofa)
 est.vd6.1 <- coef(fit.vd6.1, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
 plotMe(est.vd6.1, c(-2,6))
 
+fit.vd6.2 <- pfr(death ~ lf.vd(SOFA, transform = "quadratic", bs="ps")
+                 + age + los, family="binomial", data=sofa)
+est.vd6.2 <- coef(fit.vd6.2, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
+plotMe(est.vd6.2, c(-2,6))

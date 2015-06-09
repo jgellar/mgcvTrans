@@ -137,18 +137,25 @@ est1.3 <- coef.pfr(mod1.3)
 names(est1.3)[3:4] <- c("SOFA.vd", "SOFA.arg")
 plotMe(est1.3)
 
-
-
 mod1.4 <- gam(y ~ s(x1, x2, bs="pi", xt=list(g="linear", msp=TRUE)))
 est1.4 <- coef.pfr(mod1.4)
 names(est1.4)[3:4] <- c("SOFA.vd", "SOFA.arg")
 plotMe(est1.4)
 
+mod1.5 <- gam(y ~ s(x1, x2, bs="pi", xt=list(g="quadratic")))
+est1.5 <- coef.pfr(mod1.5)
+names(est1.5)[3:4] <- c("SOFA.vd", "SOFA.arg")
+plotMe(est1.5)
 
+mod1.6 <- gam(y ~ s(x1, x2, bs="pi", xt=list(g="quadratic", msp=TRUE)))
+est1.6 <- coef.pfr(mod1.6)
+names(est1.6)[3:4] <- c("SOFA.vd", "SOFA.arg")
+plotMe(est1.6)
 
 
 ftrue <- sin(2*pi*est1.1$SOFA.arg) - est1.1$SOFA.vd*2*sin(2*pi*est1.1$SOFA.arg)
-amse <- sapply(list(est1.1, est1.2, est1.3, est1.4), function(x) mean((x$value - ftrue)^2))
+amse <- sapply(list(est1.1, est1.2, est1.3, est1.4, est1.5, est1.6),
+               function(x) mean((x$value - ftrue)^2))
 
 
 
