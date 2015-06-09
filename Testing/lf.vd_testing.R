@@ -75,7 +75,7 @@ plotMe(est.vd4.1)
 
 # Linear Interaction
 # One penalty
-fit.vd5.1 <- pfr(death ~ lf.vd(SOFA, transform = "linear", bs="ps", cpen=TRUE) + age + los,
+fit.vd5.1 <- pfr(death ~ lf.vd(SOFA, transform = "linear", bs="ps", mp=FALSE) + age + los,
                  family="binomial", data=sofa)
 est.vd5.1 <- coef(fit.vd5.1, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
 plotMe(est.vd5.1, c(-2,6))
@@ -89,7 +89,7 @@ plotMe(est.vd5.2, c(-2,6))
 
 
 # Quadratic Interaction
-fit.vd6.1 <- pfr(death ~ lf.vd(SOFA, transform = "quadratic", bs="ps", cpen=TRUE) + age + los,
+fit.vd6.1 <- pfr(death ~ lf.vd(SOFA, transform = "quadratic", bs="ps", mp=FALSE) + age + los,
                  family="binomial", data=sofa)
 est.vd6.1 <- coef(fit.vd6.1, n=173, n2=173) %>% filter(SOFA.arg <= SOFA.vd)
 plotMe(est.vd6.1, c(-2,6))

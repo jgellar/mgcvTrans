@@ -201,6 +201,7 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
 }
 
 #' Get recognized transformation function
+#' @keywords internal
 getTF <- function(fname, nterm) {
   # fname: transformation function identifier (character string)
   # nterm: number of terms of smooth
@@ -212,7 +213,7 @@ getTF <- function(fname, nterm) {
     function(x) (x - max(x0))/(max(x0) - min(x0))
   } else if (fname=="s-t") {
     if (nterm >= 2) function(s,t) s-t
-    else stop(paste0("Not enough terms for ", fterm, " transformation"))
+    else stop(paste0("Not enough terms for ", fname, " transformation"))
   } else if (fname=="s/t") {
     if (nterm >= 2) function(s,t) ifelse(t==0, 0.5, s/t)
     else stop(paste0("Not enough terms for ", fterm, " transformation"))
@@ -242,7 +243,13 @@ getTF <- function(fname, nterm) {
 
 
 #' Predict.matrix method for dt basis
-
+#' 
+#' @param object a \code{dt.smooth} object created by
+#'   \code{\link{smooth.construct.dt.smooth.spec}}, see
+#'   \code{\link[mgcv]{smooth.construct}}
+#' @param data  see \code{\link[mgcv]{smooth.construct}}
+#' @return design matrix for PEER terms
+#' @author Jonathan Gellar
 Predict.matrix.dt.smooth <- function(object, data) {
   # Prediction method for parameteric bivariate basis
   
