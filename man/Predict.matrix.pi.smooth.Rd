@@ -4,7 +4,7 @@
 \alias{Predict.matrix.pi.smooth}
 \title{Predict.matrix method for pi basis}
 \usage{
-Predict.matrix.pi.smooth(object, data)
+\method{Predict.matrix}{pi.smooth}(object, data)
 }
 \arguments{
 \item{object}{a \code{pi.smooth} object created by

@@ -4,7 +4,7 @@
 \alias{Predict.matrix.nb.smooth}
 \title{Predict.matrix method for nb basis}
 \usage{
-Predict.matrix.nb.smooth(object, data)
+\method{Predict.matrix}{nb.smooth}(object, data)
 }
 \arguments{
 \item{object}{the object}

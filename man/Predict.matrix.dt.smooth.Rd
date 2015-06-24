@@ -4,7 +4,7 @@
 \alias{Predict.matrix.dt.smooth}
 \title{Predict.matrix method for dt basis}
 \usage{
-Predict.matrix.dt.smooth(object, data)
+\method{Predict.matrix}{dt.smooth}(object, data)
 }
 \arguments{
 \item{object}{a \code{dt.smooth} object created by

@@ -101,7 +101,7 @@
 #'     input data
 #'     \item class: the class of the smooth object for the inner smooth
 #'   }
-#' @author Jonathan Gellar
+#' @author Jonathan Gellar \email{JGellar@@mathematica-mpr.com}
 #' @seealso \code{\link[mgcv]{smooth.construct}}
 #' 
 #' 
