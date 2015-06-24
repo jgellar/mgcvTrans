@@ -2,9 +2,9 @@
 
 library(devtools)
 dev_mode()
-load_all()
 #load_all("../pcox/")
 load_all("../refund/")
+load_all()
 #load_all("../FDA - Survival/pcox/")
 
 library(mgcv)
