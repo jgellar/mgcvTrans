@@ -7,11 +7,19 @@
 \method{Predict.matrix}{nb.smooth}(object, data)
 }
 \arguments{
-\item{object}{the object}
+\item{object}{a \code{nb.smooth} object created by
+\code{\link{smooth.construct.nb.smooth.spec}}, see
+\code{\link[mgcv]{smooth.construct}}}
 
-\item{data}{the data}
+\item{data}{see \code{\link[mgcv]{smooth.construct}}}
+}
+\value{
+design matrix for \code{dt} terms
 }
 \description{
 Predict.matrix method for nb basis
+}
+\author{
+Jonathan Gellar
 }
 

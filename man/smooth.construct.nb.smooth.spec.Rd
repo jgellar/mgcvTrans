@@ -37,17 +37,23 @@ b-spline smoothing. This method will also be used in the construction of the
 basis if the user specifies knots that are not equal to the unique data values.
 }
 \examples{
+library(mgcv)
 N <- 100
 x <- sample(-3:3, N, replace=TRUE)
 y <- sin(2*pi*x/6) + rnorm(N, sd=.5)
-mod1 <- mgcv::gam(y ~ s(x, bs="nb"))
+mod1 <- gam(y ~ s(x, bs="nb"))
 plot(mod1)
 xind <- seq(-3,3,by=.1)
 lines(sin(xind) ~ xind, col="red")
 
-# With lowess interpolation
-mod2 <- mgcv::gam(y ~ s(x, bs="nb", xt="lowess"))
+# lowess interpolation
+mod2 <- gam(y ~ s(x, bs="nb", xt="lowess"))
 plot(mod2)
+lines(sin(xind) ~ xind, col="red")
+
+# b-spline interpolation
+mod3 <- gam(y ~ s(x, bs="nb", xt="bspline"))
+plot(mod3)
 lines(sin(xind) ~ xind, col="red")
 }
 \author{

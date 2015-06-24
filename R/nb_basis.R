@@ -30,17 +30,23 @@
 #' @seealso \code{\link[mgcv]{smooth.construct}}
 #' 
 #' @examples
+#' library(mgcv)
 #' N <- 100
 #' x <- sample(-3:3, N, replace=TRUE)
 #' y <- sin(2*pi*x/6) + rnorm(N, sd=.5)
-#' mod1 <- mgcv::gam(y ~ s(x, bs="nb"))
+#' mod1 <- gam(y ~ s(x, bs="nb"))
 #' plot(mod1)
 #' xind <- seq(-3,3,by=.1)
 #' lines(sin(xind) ~ xind, col="red")
 #' 
-#' # With lowess interpolation
-#' mod2 <- mgcv::gam(y ~ s(x, bs="nb", xt="lowess"))
+#' # lowess interpolation
+#' mod2 <- gam(y ~ s(x, bs="nb", xt="lowess"))
 #' plot(mod2)
+#' lines(sin(xind) ~ xind, col="red")
+#' 
+#' # b-spline interpolation
+#' mod3 <- gam(y ~ s(x, bs="nb", xt="bspline"))
+#' plot(mod3)
 #' lines(sin(xind) ~ xind, col="red")
 #' 
 
@@ -72,7 +78,7 @@ smooth.construct.nb.smooth.spec <- function(object, data, knots) {
         predict(loess(y ~ x, data=data.frame(y=f0[,j], x=knots)),
                 newdata=data.frame(x=data[[1]]))
       } else if (tolower(interp)%in% c("bs", "bspline")) {
-        predict(gam(y ~ s(x, bs="ps"), data=data.frame(y=f0[,j], x=knots)),
+        predict(mgcv::gam(y ~ s(x, bs="ps"), data=data.frame(y=f0[,j], x=knots)),
                 newdata=data.frame(x=data[[1]]))
         #stop("b-spline interpolation not yet implemented")
       } else {
@@ -132,7 +138,7 @@ Predict.matrix.nb.smooth <- function(object, data) {
         predict(loess(y ~ x, data=data.frame(y=f0[,j], x=object$knots)),
                 newdata=data.frame(x=data[[1]]))
       } else if (object$interpolation %in% c("bs", "bspline")) {
-        predict(gam(y ~ s(x, bs="ps", k=object$bs.dim, sp=0),
+        predict(mgcv::gam(y ~ s(x, bs="ps", k=object$bs.dim, sp=0),
                     data=data.frame(y=f0[,j], x=object$knots)),
                 newdata=data.frame(x=data[[1]]))
       } else {

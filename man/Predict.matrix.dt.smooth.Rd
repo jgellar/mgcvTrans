@@ -14,7 +14,7 @@
 \item{data}{see \code{\link[mgcv]{smooth.construct}}}
 }
 \value{
-design matrix for PEER terms
+design matrix for \code{dt} terms
 }
 \description{
 Predict.matrix method for dt basis
