@@ -109,8 +109,12 @@ smooth.construct.nb.smooth.spec <- function(object, data, knots) {
 
 #' Predict.matrix method for nb basis
 #' 
-#' @param object the object
-#' @param data the data
+#' @param object a \code{nb.smooth} object created by
+#'   \code{\link{smooth.construct.nb.smooth.spec}}, see
+#'   \code{\link[mgcv]{smooth.construct}}
+#' @param data  see \code{\link[mgcv]{smooth.construct}}
+#' @return design matrix for \code{dt} terms
+#' @author Jonathan Gellar
 #' 
 Predict.matrix.nb.smooth <- function(object, data) {
   # Prediction method for parameteric nb basis
@@ -139,25 +143,3 @@ Predict.matrix.nb.smooth <- function(object, data) {
   }
 }
 
-
-
-#     
-#     if (object$interpolation=="linear") {
-#       W <- t(sapply(sapply(data[[1]], function(x) {
-#         approx(object$knots, 1:nrow(f0), x)$y
-#       }), function(y) {
-#         d <- abs(sapply(1:nrow(f0), function(z) {
-#           y-z
-#         }))
-#         d[d>1] <- 1
-#         1-d
-#       }))
-#       W %*% f0
-#     } else if (object$interpolation=="lowess") {
-#       sapply(1:nrow(f0), function(j) {
-#         lfit <- loess(y ~ x, data=data.frame(y=f0[,j], x=object$knots))
-#         tmp=predict(lfit, newdata=data.frame(x=data[[1]]))
-#       })
-#     } else {
-#       stop("Interpolation method not supported")
-#     }

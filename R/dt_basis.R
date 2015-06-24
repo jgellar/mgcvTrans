@@ -248,7 +248,7 @@ getTF <- function(fname, nterm) {
 #'   \code{\link{smooth.construct.dt.smooth.spec}}, see
 #'   \code{\link[mgcv]{smooth.construct}}
 #' @param data  see \code{\link[mgcv]{smooth.construct}}
-#' @return design matrix for PEER terms
+#' @return design matrix for \code{dt} terms
 #' @author Jonathan Gellar
 Predict.matrix.dt.smooth <- function(object, data) {
   # Prediction method for parameteric bivariate basis
