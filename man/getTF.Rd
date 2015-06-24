@@ -9,4 +9,5 @@ getTF(fname, nterm)
 \description{
 Get recognized transformation function
 }
+\keyword{internal}
 

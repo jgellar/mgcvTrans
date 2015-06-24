@@ -6,7 +6,20 @@
 \usage{
 Predict.matrix.pi.smooth(object, data)
 }
+\arguments{
+\item{object}{a \code{pi.smooth} object created by
+\code{\link{smooth.construct.pi.smooth.spec}}, see
+\code{\link[mgcv]{smooth.construct}}}
+
+\item{data}{see \code{\link[mgcv]{smooth.construct}}}
+}
+\value{
+design matrix for PEER terms
+}
 \description{
 Predict.matrix method for pi basis
+}
+\author{
+Jonathan Gellar
 }
 
