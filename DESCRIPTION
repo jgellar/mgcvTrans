@@ -1,6 +1,6 @@
 Package: mgcvTrans
 Type: Package
-Title: Defines a number of mgcv bases involving transformations of terms
+Title: Defines a number of extra mgcv bases involving transformations of terms
 Version: 0.1.0
 Date: 2015-04-17
 Authors@R: c(person("Jonathan", "Gellar",

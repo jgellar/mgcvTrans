@@ -5,11 +5,14 @@
 #' with a difference penalty. This basis is most useful when there are not very
 #' many unique values of the variable, making dimension reduction unnecessary.
 #' 
-#' 
-#' 
+#' @param object the object
+#' @param data the data
+#' @param knots the knots
 #' 
 #' 
 #' @examples
+#' 
+#' \dontrun{
 #' N <- 100
 #' x <- sample(-3:3, N, replace=T)
 #' y <- sin(2*pi*x/6) + rnorm(N, sd=.5)
@@ -18,6 +21,7 @@
 #' pre <- predict(mod, newdata=data.frame(x=seq(-3,3,length=100)))
 #' mod <- gam(y ~ s(x, bs="nb", xt="lowess"))
 #' pre <- predict(mod, newdata=data.frame(x=seq(-3,3,length=100)))
+#' }
 #' 
 #' 
 
@@ -82,6 +86,10 @@ smooth.construct.nb.smooth.spec <- function(object, data, knots) {
 }
 
 #' Predict.matrix method for nb basis
+#' 
+#' @param object the object
+#' @param data the data
+#' 
 Predict.matrix.nb.smooth <- function(object, data) {
   # Prediction method for parameteric nb basis
   if (all(data[[1]] %in% object$knots)) {

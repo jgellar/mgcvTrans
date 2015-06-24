@@ -6,6 +6,11 @@
 \usage{
 Predict.matrix.nb.smooth(object, data)
 }
+\arguments{
+\item{object}{the object}
+
+\item{data}{the data}
+}
 \description{
 Predict.matrix method for nb basis
 }

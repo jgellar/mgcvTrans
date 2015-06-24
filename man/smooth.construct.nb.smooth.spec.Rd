@@ -6,6 +6,13 @@
 \usage{
 smooth.construct.nb.smooth.spec(object, data, knots)
 }
+\arguments{
+\item{object}{the object}
+
+\item{data}{the data}
+
+\item{knots}{the knots}
+}
 \description{
 The \code{nb} "basis" uses a separate coefficient for each value of
 the variables this is a smooth function of. The coefficients are penalized
@@ -13,6 +20,7 @@ with a difference penalty. This basis is most useful when there are not very
 many unique values of the variable, making dimension reduction unnecessary.
 }
 \examples{
+\dontrun{
 N <- 100
 x <- sample(-3:3, N, replace=T)
 y <- sin(2*pi*x/6) + rnorm(N, sd=.5)
@@ -21,5 +29,6 @@ pre <- predict(mod, newdata=data.frame(x=c(-3:3)))
 pre <- predict(mod, newdata=data.frame(x=seq(-3,3,length=100)))
 mod <- gam(y ~ s(x, bs="nb", xt="lowess"))
 pre <- predict(mod, newdata=data.frame(x=seq(-3,3,length=100)))
+}
 }
 
