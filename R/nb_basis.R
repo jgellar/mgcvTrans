@@ -12,7 +12,6 @@
 #' 
 #' @examples
 #' 
-#' \dontrun{
 #' N <- 100
 #' x <- sample(-3:3, N, replace=T)
 #' y <- sin(2*pi*x/6) + rnorm(N, sd=.5)
@@ -21,7 +20,6 @@
 #' pre <- predict(mod, newdata=data.frame(x=seq(-3,3,length=100)))
 #' mod <- gam(y ~ s(x, bs="nb", xt="lowess"))
 #' pre <- predict(mod, newdata=data.frame(x=seq(-3,3,length=100)))
-#' }
 #' 
 #' 
 
