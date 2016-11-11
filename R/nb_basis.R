@@ -49,6 +49,7 @@
 #' plot(mod3)
 #' lines(sin(xind) ~ xind, col="red")
 #' 
+#' 
 
 smooth.construct.nb.smooth.spec <- function(object, data, knots) {
   k <- object$bs.dim
