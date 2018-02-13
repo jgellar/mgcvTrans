@@ -118,7 +118,7 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
     tf <- identity
     warning("No transformation function supplied... using identity")
   }
-  if (!is.list(tf)) tf <- list(tf)
+  if (!is.list(tf)) tf <- as.list(tf)
   tf <- lapply(tf, function(f) {
     if (is.character(f)) {
       # Create transformation functions for recognized character strings
@@ -141,9 +141,13 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
     argnms <- names(args)
     if (length(args) > length(object$term))
       stop("Transformation function of too many arguments is supplied")
-    trmnms <- if (all(argnms %in% object$term))
+    trmnms <- if (all(argnms %in% object$term)) {
       argnms
-    else object$term[1:length(args)]
+    } else if (length(args) == 1 & length(tf) <= length(object$term)) {
+      object$term[i]
+    } else {
+      object$term[1:length(args)]      
+    }
     if (!all(trmnms %in% names(data))) {
       miss <- trmnms[!(trmnms %in% names(data))]
       stop(paste0("Variable(s) ", paste(trmnms[miss], collapse=", "),
@@ -210,7 +214,7 @@ getTF <- function(fname, nterm) {
   } else if (fname=="ecdf") {
     function(x) ecdf(x0)(x)
   } else if (fname=="linear01") {
-    function(x) (x - max(x0))/(max(x0) - min(x0))
+    function(x) (x - min(x0))/(max(x0) - min(x0))
   } else if (fname=="s-t") {
     if (nterm >= 2) function(s,t) s-t
     else stop(paste0("Not enough terms for ", fname, " transformation"))
