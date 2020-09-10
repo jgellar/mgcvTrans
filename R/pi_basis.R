@@ -72,6 +72,7 @@
 #' basis of dimension 15 over \code{x}.
 #' 
 #' @author Fabian Scheipl and Jonathan Gellar
+#' @export
 #' @return An object of class "pi.smooth". See
 #'    \code{\link[mgcv]{smooth.construct}} for the elements it will contain.
 #' 
@@ -202,12 +203,14 @@ smooth.construct.pi.smooth.spec <- function(object, data, knots) {
 
 
 #' Predict.matrix method for pi basis
+#' 
 #' @param object a \code{pi.smooth} object created by
 #'   \code{\link{smooth.construct.pi.smooth.spec}}, see
 #'   \code{\link[mgcv]{smooth.construct}}
 #' @param data  see \code{\link[mgcv]{smooth.construct}}
 #' @return design matrix for PEER terms
-#' @author Jonathan Gellar
+#' @author Jonathan 
+#' @export
 
 Predict.matrix.pi.smooth <- function(object, data) {
   # Prediction method for parameteric bivariate basis

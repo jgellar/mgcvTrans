@@ -103,6 +103,9 @@
 #'   }
 #' @author Jonathan Gellar \email{JGellar@@mathematica-mpr.com}
 #' @seealso \code{\link[mgcv]{smooth.construct}}
+#' @export
+#' @importFrom stats loess
+#' @importFrom stats ecdf
 #' 
 #' 
 
@@ -159,7 +162,6 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
       # Assign raw data to environemnt of transformation function, as the
       # variable name appended with "0".
       # This allows functions like min() and max() to refer to the raw data
-      # a
       # as opposed to the current data.
       assign(paste0(argnms[j], "0"), calldat[[j]], envir=environment(tf[[i]]))
       invisible(NULL)
@@ -254,6 +256,9 @@ getTF <- function(fname, nterm) {
 #' @param data  see \code{\link[mgcv]{smooth.construct}}
 #' @return design matrix for \code{dt} terms
 #' @author Jonathan Gellar
+#' @export
+#' 
+
 Predict.matrix.dt.smooth <- function(object, data) {
   # Prediction method for parameteric bivariate basis
   

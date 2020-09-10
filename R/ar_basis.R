@@ -30,6 +30,7 @@
 #' 
 #' @author Jonathan Gellar \email{JGellar@@mathematica-mpr.com}
 #' @seealso \code{\link[mgcv]{smooth.construct}}
+#' @export
 #' 
 #' @examples
 #' library(mgcv)
@@ -124,6 +125,8 @@ smooth.construct.ar.smooth.spec <- function(object, data, knots) {
 #' @param data  see \code{\link[mgcv]{smooth.construct}}
 #' @return design matrix for \code{dt} terms
 #' @author Jonathan Gellar
+#' @export
+#' @importFrom stats model.matrix approx predict
 #' 
 Predict.matrix.ar.smooth <- function(object, data) {
   # Prediction method for parameteric ar basis

@@ -1,11 +1,9 @@
 # Stable Tests - Run this first!
 
 library(devtools)
-dev_mode()
-load_all()
-load_all("../refund/")
+devtools::load_all()
 library(mgcv)
-
+library(refund)
 library(ggplot2)
 library(gridExtra)
 library(dplyr)
@@ -78,7 +76,7 @@ p1.2 <- ggplot(est1.2, aes(x,f)) +
 p1.2
 
 
-# Evently spaced data, but f is more variable at one end than the other
+# Evenly spaced data, but f is more variable at one end than the other
 N <- 500
 dat3 <- data.frame(x=runif(N))
 dat3$Y1 <- sin(2*pi*log(dat3$x)) + rnorm(N, sd=.5)

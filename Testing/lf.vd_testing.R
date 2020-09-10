@@ -2,9 +2,10 @@ library(devtools)
 library(ggplot2)
 library(RColorBrewer)
 library(dplyr)
+library(refund)
 
-dev_mode()
-load_all("../refund")
+devtools::load_all()
+# load_all("../refund")
 #load_all("../mgcvTrans/")
 
 plotMe <- function(est, lims=NULL) {
