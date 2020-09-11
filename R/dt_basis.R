@@ -108,6 +108,7 @@
 #' @importFrom stats ecdf
 #' 
 #' 
+#' 
 
 smooth.construct.dt.smooth.spec <- function(object, data, knots) {
   # Constructor method for parametric bivariate basis
