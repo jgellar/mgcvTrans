@@ -115,6 +115,11 @@ smooth.construct.dt.smooth.spec <- function(object, data, knots) {
   # Input Checks (TO DO)
   xt <- object$xt
   
+  # Need alternative approach:
+  #  - can't add x0 like we're doing
+  #  - add data0 to the xt object, and have the transformation funcs take data, data0?
+  
+  
   # Extract tf and make it a list of functions (if it isn't already)
   tf <- xt$tf
   if (is.null(tf)) {
