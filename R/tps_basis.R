@@ -40,6 +40,7 @@
 #' y <- sin(2*pi*x/6) + rnorm(N, sd=.5)
 #' 
 #' 
+#' 
 
 smooth.construct.tps.smooth.spec <- function(object, data, knots) {
   
