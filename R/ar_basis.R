@@ -1,6 +1,12 @@
-#' Autoregressive Penalty
+#' Autoregressive/Random walk Penalty
 #' 
-#' The \code{ar} "basis" uses a separate coefficient for each value of
+#' The \code{ar} basis
+#' 
+#' "discrete difference"
+#' "random walk"
+#' "step function"
+#' 
+#'   uses a separate coefficient for each value of
 #' the variables this is a smooth function of. The coefficients are penalized
 #' with an autoregressive penalty. This basis is useful when there are not very
 #' many unique values of the variable, making dimension reduction unnecessary.
@@ -71,7 +77,7 @@ smooth.construct.ar.smooth.spec <- function(object, data, knots) {
   # Model matrix
   X <- if (all(data[[1]] %in% knots)) {
     # No interpolation needed
-    model.matrix(~factor(data[[1]], levels=knots))
+    model.matrix(~factor(data[[1]], levels=knots) - 1)
   } else {
     # Requires interpolation
     f0 <- model.matrix(~factor(knots))
