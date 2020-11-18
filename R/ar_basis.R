@@ -139,7 +139,7 @@ Predict.matrix.ar.smooth <- function(object, data) {
   if (all(data[[1]] %in% object$knots)) {
     # No interpolation needed
     newx <- factor(data[[1]], levels=object$knots)
-    model.matrix(~newx)
+    model.matrix(~newx - 1)
   } else {
     # Requires interpolation!
     f0 <- model.matrix(~factor(object$knots))
