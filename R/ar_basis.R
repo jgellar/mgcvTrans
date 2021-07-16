@@ -154,4 +154,3 @@ Predict.matrix.ar.smooth <- function(object, data) {
     })
   }
 }
-
