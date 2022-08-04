@@ -4,7 +4,7 @@
 \alias{Predict.matrix.ar.smooth}
 \title{Predict.matrix method for ar basis}
 \usage{
-Predict.matrix.ar.smooth(object, data)
+\method{Predict.matrix}{ar.smooth}(object, data)
 }
 \arguments{
 \item{object}{a \code{ar.smooth} object created by
