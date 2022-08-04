@@ -1,8 +1,8 @@
 # Stable Tests - Run this first!
 
 library(devtools)
-devtools::load_all()
 library(mgcv)
+devtools::load_all()
 library(refund)
 library(ggplot2)
 library(gridExtra)
@@ -114,7 +114,14 @@ names(mse3.2) <- c("tprs", "adaptive", "log", "ecdf", "x^2", "x^6")
 
 
 
+# AR
 
+N <- 1000
+d <- tibble(agecat = sample.int(8, N, replace = TRUE)) %>%
+  mutate(mu = sin(pi*agecat/7),
+         Y = mu + rnorm(N, sd = .1))
+fit4.1 <- gam(Y ~ s(agecat, k = 4), data = d)
+fit4.2 <- gam(Y ~ s(agecat, bs = "ar"), data = d)
 
 
 

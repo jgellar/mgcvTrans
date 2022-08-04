@@ -15,4 +15,5 @@ Description: This package consists of a set of a number of mgcv-style basis
     terms of a multivariate basis.
 License: GPL-2
 Imports: mgcv
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
+Encoding: UTF-8

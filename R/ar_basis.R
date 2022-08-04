@@ -52,7 +52,6 @@
 #' plot(mod3)
 #' lines(sin(xind) ~ xind, col="red")
 #' 
-#' 
 
 smooth.construct.ar.smooth.spec <- function(object, data, knots) {
   k <- object$bs.dim
