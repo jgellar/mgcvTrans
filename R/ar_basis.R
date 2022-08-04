@@ -65,7 +65,11 @@ smooth.construct.ar.smooth.spec <- function(object, data, knots) {
   interp <- ifelse(is.null(object$xt), "linear", object$xt)
   knots <- knots[[object$term]]
   if (is.null(knots)) {
-    knots <- unique(data[[1]])
+    if (object$by == "NA") {
+      knots <- unique(data[[object$term]][data[[object$by]]!=0])
+    } else {
+      knots <- unique(data[[object$term]])
+    }
   }
   knots <- knots[order(knots)]
   
@@ -108,14 +112,18 @@ smooth.construct.ar.smooth.spec <- function(object, data, knots) {
     L1 <- c(0, L1[-k])
     L <- rbind(L, L1)
   }
-  D <- t(L) %*% L
+  
+  D <- L
+  rownames(D) = colnames(D) <- NULL
+  S <- t(D) %*% D
   
   # Modify return object
   object$X <- X
-  object$S <- list(D)
+  object$D <- D
+  object$S <- list(S)
   object$knots <- knots
   object$bs.dim <- k
-  object$rank <- qr(D)$rank
+  object$rank <- qr(S)$rank
   object$null.space.dim <- k - object$rank
   object$df <- k #need this for gamm
   object$interpolation <- interp
@@ -139,10 +147,10 @@ Predict.matrix.ar.smooth <- function(object, data) {
   if (all(data[[1]] %in% object$knots)) {
     # No interpolation needed
     newx <- factor(data[[1]], levels=object$knots)
-    model.matrix(~newx - 1)
+    model.matrix(~newx)
   } else {
     # Requires interpolation!
-    f0 <- model.matrix(~factor(object$knots))
+    f0 <- model.matrix(~factor(object$knots) - 1)
     sapply(1:nrow(f0), function(j) {
       if (object$interpolation=="linear") {
         approx(object$knots,f0[,j], data[[1]])$y
