@@ -73,6 +73,8 @@
 #' 
 #' @author Fabian Scheipl and Jonathan Gellar
 #' @export
+#' @importFrom mgcv Predict.matrix
+#' @importFrom mgcv smooth.construct
 #' @return An object of class "pi.smooth". See
 #'    \code{\link[mgcv]{smooth.construct}} for the elements it will contain.
 #' 

@@ -1,6 +1,6 @@
 # Stable Tests - Run this first!
 
-library(devtools)
+#library(devtools)
 library(mgcv)
 devtools::load_all()
 library(refund)

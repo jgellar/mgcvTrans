@@ -106,7 +106,8 @@
 #' @export
 #' @importFrom stats loess
 #' @importFrom stats ecdf
-#' 
+#' @importFrom mgcv Predict.matrix
+#' @importFrom mgcv smooth.construct
 #' 
 
 smooth.construct.dt.smooth.spec <- function(object, data, knots) {

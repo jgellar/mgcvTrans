@@ -33,6 +33,8 @@
 #' @export
 #' @importFrom stats approx
 #' @importFrom stats loess
+#' @importFrom mgcv Predict.matrix
+#' @importFrom mgcv smooth.construct
 #' 
 
 smooth.construct.ar.smooth.spec <- function(object, data, knots) {
